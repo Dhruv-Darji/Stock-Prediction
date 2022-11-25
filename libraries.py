@@ -7,7 +7,6 @@ import yfinance as yf
 """finta is use to finanacial technical analysis
     where TA means technical analysis"""
 from finta import TA
-
 from sklearn.ensemble import RandomForestClassifier,VotingClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split,GridSearchCV

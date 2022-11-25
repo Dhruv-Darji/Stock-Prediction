@@ -1,8 +1,8 @@
 from libraries import *
 
-def _ensemble_model(rf_model, knn_model, gbt_model, X_train, y_train, X_test, y_test):
+def _ensemble_model(rf_model, knn_model, X_train, y_train, X_test, y_test):
     # Create a dictionary of our models
-    estimators = [('knn', knn_model), ('rf', rf_model), ('gbt', gbt_model)]
+    estimators = [('knn', knn_model), ('rf', rf_model)]
 
     # Create our voting classifier, inputting our models
     ensemble = VotingClassifier(estimators, voting='hard')

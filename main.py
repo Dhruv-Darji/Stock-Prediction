@@ -7,7 +7,7 @@ from libraries import *
 
 """Here We defining some Constants"""
 
-NUM_DAYS = 10000     # The number of days of historical data to retrieve
+NUM_DAYS = 10000    # The number of days of historical data to retrieve
 INTERVAL = '1d'     # Sample rate of historical data
 symbol = 'SPY'      # Symbol of the desired stock
 # List of symbols for technical indicators
@@ -33,6 +33,58 @@ data = _exponential_smooth(data, 0.65)
 tmp1 = data.iloc[-60:]
 tmp1['close'].plot()
 
+""""Step:3 """
+def _get_indicator_data(data):
+
+    for indicator in INDICATORS:
+        """TA means technical analysis"""
+        ind_data = eval('TA.' + indicator + '(data)')
+        if not isinstance(ind_data, pd.DataFrame):
+            ind_data = ind_data.to_frame()
+        data = data.merge(ind_data, left_index=True, right_index=True)
+    data.rename(columns={"14 period EMV.": '14 period EMV'}, inplace=True)
+
+    # Also calculate moving averages for features
+    """"here ema means exponantial moving average
+        which is also known as moving average"""
+    data['ema50'] = data['close'] / data['close'].ewm(50).mean()
+    data['ema21'] = data['close'] / data['close'].ewm(21).mean()
+    data['ema15'] = data['close'] / data['close'].ewm(14).mean()
+    data['ema5'] = data['close'] / data['close'].ewm(5).mean()
+
+    # Instead of using the actual volume value (which changes over time), we normalize it with a moving volume average
+    data['normVol'] = data['volume'] / data['volume'].ewm(5).mean()
+
+    # Remove columns that won't be used as features
+    del (data['open'])
+    del (data['high'])
+    del (data['low'])
+    del (data['volume'])
+    del (data['Adj Close'])
+
+    return data
+
+
+data = _get_indicator_data(data)
+
+
+def _produce_prediction(data, window):
+
+    """Function that produces the 'truth' values
+    At a given row, it looks 'window' rows ahead to see if the price increased (1) or decreased (0)
+    window: number of days, or rows to look ahead to see what the price did"""
+
+    prediction = (data.shift(-window)['close'] >= data['close'])
+    prediction = prediction.iloc[:-window]
+    data['pred'] = prediction.astype(int)
+    return data
+
+data = _produce_prediction(data, window=15)
+del (data['close'])
+data = data.dropna()  # Some indicators produce NaN values for the first few rows, we just remove them here
+data.tail() #use to get last n rows
+
+"""step 3 over"""
 
 def cross_Validation(data):
     # Split data into equal partitions of size len_train
@@ -52,14 +104,14 @@ def cross_Validation(data):
         df = data.iloc[i * num_train: (i * num_train) + len_train]
         i += 1
         print(i * num_train, (i * num_train) + len_train)
+        print(len(df))
 
-        if len(df) < 40:
+        if len(df) <= 40:
             break
 
         y = df['pred']
         features = [x for x in df.columns if x not in ['pred']]
         X = df[features]
-        print(X)
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=7 * len(X) // 10, shuffle=False)
 
@@ -84,10 +136,11 @@ def cross_Validation(data):
         rf_RESULTS.append(rf_accuracy)
         knn_RESULTS.append(knn_accuracy)
         ensemble_RESULTS.append(ensemble_accuracy)
-
-    print('RF Accuracy = ' + str(sum(rf_RESULTS) / len(rf_RESULTS)))
-    print('KNN Accuracy = ' + str(sum(knn_RESULTS) / len(knn_RESULTS)))
-    print('Ensemble Accuracy = ' + str(sum(ensemble_RESULTS) / len(ensemble_RESULTS)))
-
+    try:
+        print('RF Accuracy = ' + str(sum(rf_RESULTS) / len(rf_RESULTS)))
+        print('KNN Accuracy = ' + str(sum(knn_RESULTS) / len(knn_RESULTS)))
+        print('Ensemble Accuracy = ' + str(sum(ensemble_RESULTS) / len(ensemble_RESULTS)))
+    except ZeroDivisionError:
+        print("zero division error")
 
 cross_Validation(data)
