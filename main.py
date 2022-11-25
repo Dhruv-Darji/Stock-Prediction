@@ -10,9 +10,9 @@ warnings.filterwarnings('always')
 
 """Here We defining some Constants"""
 
-NUM_DAYS = 200    # The number of days of historical data to retrieve
+NUM_DAYS = 250    # The number of days of historical data to retrieve
 INTERVAL = '1d'     # Sample rate of historical data
-symbol = 'TATAMOTORS.BO'      # Symbol of the desired stock
+symbol = 'AWL.NS'      # Symbol of the desired stock
 # List of symbols for technical indicators
 INDICATORS = ['RSI', 'MACD', 'STOCH','ADL', 'ATR', 'MOM', 'MFI', 'ROC', 'OBV', 'CCI', 'EMV', 'VORTEX']
 
@@ -70,6 +70,7 @@ def _get_indicator_data(data):
 
 data = _get_indicator_data(data)
 live_pred_data = data.iloc[-16:-11]
+print("live pred data",live_pred_data)
 
 
 def _produce_prediction(data, window):
@@ -117,6 +118,7 @@ def cross_Validation(data):
         X = df[features]
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=7 * len(X) // 10, shuffle=False)
+        warnings.filterwarnings("ignore")
 
         rf_model = _train_random_forest(X_train, y_train, X_test, y_test)
         knn_model = _train_KNN(X_train, y_train, X_test, y_test)
@@ -143,14 +145,11 @@ def cross_Validation(data):
         print('RF Accuracy = ' + str((sum(rf_RESULTS) / len(rf_RESULTS))*100)+"%")
         print('KNN Accuracy = ' + str((sum(knn_RESULTS) / len(knn_RESULTS))*100) +"%")
         print('Ensemble Accuracy = ' + str((sum(ensemble_RESULTS) / len(ensemble_RESULTS))*100)+"%")
-        print(live_pred_data.head())
         live_pred_data['close'].plot()
         del (live_pred_data['close'])
         prediction = ensemble_model.predict(live_pred_data)
-        print(prediction)
+        print("pridiction for after 15days after today:",prediction)
     except ZeroDivisionError:
         print("zero division error")
 
 cross_Validation(data)
-plt.legend()
-plt.show()
