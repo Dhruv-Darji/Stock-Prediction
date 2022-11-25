@@ -1,15 +1,18 @@
+import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 from Ensemble import _ensemble_model
 from KNN_model import _train_KNN
 from Random_Forest import _train_random_forest
 from libraries import *
+import warnings
+warnings.filterwarnings('always')
 
 
 """Here We defining some Constants"""
 
-NUM_DAYS = 10000    # The number of days of historical data to retrieve
+NUM_DAYS = 200    # The number of days of historical data to retrieve
 INTERVAL = '1d'     # Sample rate of historical data
-symbol = 'SPY'      # Symbol of the desired stock
+symbol = 'TATAMOTORS.BO'      # Symbol of the desired stock
 # List of symbols for technical indicators
 INDICATORS = ['RSI', 'MACD', 'STOCH','ADL', 'ATR', 'MOM', 'MFI', 'ROC', 'OBV', 'CCI', 'EMV', 'VORTEX']
 
@@ -31,7 +34,7 @@ def _exponential_smooth(data, alpha):
 data = _exponential_smooth(data, 0.65)
 
 tmp1 = data.iloc[-60:]
-tmp1['close'].plot()
+#tmp1['close'].plot()
 
 """"Step:3 """
 def _get_indicator_data(data):
@@ -66,6 +69,7 @@ def _get_indicator_data(data):
 
 
 data = _get_indicator_data(data)
+live_pred_data = data.iloc[-16:-11]
 
 
 def _produce_prediction(data, window):
@@ -104,9 +108,8 @@ def cross_Validation(data):
         df = data.iloc[i * num_train: (i * num_train) + len_train]
         i += 1
         print(i * num_train, (i * num_train) + len_train)
-        print(len(df))
 
-        if len(df) <= 40:
+        if len(df) < 40:
             break
 
         y = df['pred']
@@ -132,15 +135,22 @@ def cross_Validation(data):
         knn_accuracy = accuracy_score(y_test.values, knn_prediction)
         ensemble_accuracy = accuracy_score(y_test.values, ensemble_prediction)
 
-        print(rf_accuracy, knn_accuracy, ensemble_accuracy)
+        print(rf_accuracy*100, knn_accuracy*100, ensemble_accuracy*100)
         rf_RESULTS.append(rf_accuracy)
         knn_RESULTS.append(knn_accuracy)
         ensemble_RESULTS.append(ensemble_accuracy)
     try:
-        print('RF Accuracy = ' + str(sum(rf_RESULTS) / len(rf_RESULTS)))
-        print('KNN Accuracy = ' + str(sum(knn_RESULTS) / len(knn_RESULTS)))
-        print('Ensemble Accuracy = ' + str(sum(ensemble_RESULTS) / len(ensemble_RESULTS)))
+        print('RF Accuracy = ' + str((sum(rf_RESULTS) / len(rf_RESULTS))*100)+"%")
+        print('KNN Accuracy = ' + str((sum(knn_RESULTS) / len(knn_RESULTS))*100) +"%")
+        print('Ensemble Accuracy = ' + str((sum(ensemble_RESULTS) / len(ensemble_RESULTS))*100)+"%")
+        print(live_pred_data.head())
+        live_pred_data['close'].plot()
+        del (live_pred_data['close'])
+        prediction = ensemble_model.predict(live_pred_data)
+        print(prediction)
     except ZeroDivisionError:
         print("zero division error")
 
 cross_Validation(data)
+plt.legend()
+plt.show()

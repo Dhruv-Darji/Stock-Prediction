@@ -10,15 +10,4 @@ def _ensemble_model(rf_model, knn_model, X_train, y_train, X_test, y_test):
     # fit model to training data
     ensemble.fit(X_train, y_train)
 
-    # test our model on the test data
-    print(ensemble.score(X_test, y_test))
-
-    prediction = ensemble.predict(X_test)
-
-    print(classification_report(y_test, prediction))
-    print(confusion_matrix(y_test, prediction))
-
     return ensemble
-
-
-#ensemble_model = _ensemble_model(rf_model, knn_model, gbt_model, X_train, y_train, X_test, y_test)

@@ -1,10 +1,7 @@
 from libraries import *
 
 def _train_random_forest(X_train, y_train, X_test, y_test):
-    """
-    Function that uses random forest classifier to train the model
-    :return:
-    """
+    """Function that uses random forest classifier to train the model"""
 
     # Create a new random forest classifier
     rf = RandomForestClassifier()
@@ -21,15 +18,4 @@ def _train_random_forest(X_train, y_train, X_test, y_test):
     # Save best model
     rf_best = rf_gs.best_estimator_
 
-    # Check best n_estimators value
-    print(rf_gs.best_params_)
-
-    prediction = rf_best.predict(X_test)
-
-    print(classification_report(y_test, prediction))
-    print(confusion_matrix(y_test, prediction))
-
     return rf_best
-
-
-#rf_model = _train_random_forest(X_train, y_train, X_test, y_test)
