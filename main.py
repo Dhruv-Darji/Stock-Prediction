@@ -10,7 +10,7 @@ warnings.filterwarnings('always')
 
 """Here We defining some Constants"""
 
-NUM_DAYS = 250    # The number of days of historical data to retrieve
+NUM_DAYS = 150    # The number of days of historical data to retrieve
 INTERVAL = '1d'     # Sample rate of historical data
 symbol = 'AWL.NS'      # Symbol of the desired stock
 # List of symbols for technical indicators
@@ -34,7 +34,7 @@ def _exponential_smooth(data, alpha):
 data = _exponential_smooth(data, 0.65)
 
 tmp1 = data.iloc[-60:]
-#tmp1['close'].plot()
+tmp1['close'].plot()
 
 """"Step:3 """
 def _get_indicator_data(data):
@@ -149,6 +149,11 @@ def cross_Validation(data):
         del (live_pred_data['close'])
         prediction = ensemble_model.predict(live_pred_data)
         print("pridiction for after 15days after today:",prediction)
+        for i in prediction:
+            if(i==1):
+                print("stock will go up")
+            else:
+                print("stock will go down")
     except ZeroDivisionError:
         print("zero division error")
 
