@@ -45,3 +45,18 @@ def _exponential_smooth(data, alpha):
 4. create boundary on data to make analysis on that.
 5. Run on different model.
 6. got the desire output. 
+
+## Model Used by us:
+* Random Forest Algorith.
+* K -nearest neighbor Algorithm.
+* Ensemble Algorith.
+
+## Credits:
+
+#### Dhruv Darji:
+* work on data cleaning process, random forest module and ensemple module.
+* Contributed in README and PPT.
+
+#### Harsh Gandhi:
+* work on data cleaning, data visulization and KNN model.
+* Contributed in README and PPT.
