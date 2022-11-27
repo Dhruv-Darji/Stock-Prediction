@@ -24,3 +24,24 @@ import yfinance as yf
 #downloading data from yfinanace
 data = yf.download(symbol, start=start, end=end, interval=INTERVAL)
 ```
+
+## used libraries:
+* numpy
+* pandas
+* matplotlib
+* datetime
+* finta
+* sklearn
+
+## Process On data:
+
+1. get data from yfinance library.
+2. use exponential smoot function to smooth our data.
+```
+def _exponential_smooth(data, alpha):
+   return data.ewm(alpha=alpha).mean()
+```
+3. put technical analysis data and remove unwanted data.
+4. create boundary on data to make analysis on that.
+5. Run on different model.
+6. got the desire output. 
