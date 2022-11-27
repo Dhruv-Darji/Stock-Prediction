@@ -1,62 +1,53 @@
 # Stock Prediction
 
-This is python and datascience project to predict stock value which will give predict stock go up or own after 15 days from today.
+Hello this is a stock prediction system through which you will be able to predict the closing value of any stock listed in BSE or NSE by giving certain set of inputs.The models which we have used gives a pretty accurate results of the closing price of the stock.
 
 ## How to use :
 
-* Clone this repository to your system.
-* Run the main.py file In Your device.
-* Get output about whether the stock will go up or down after 15 days.
+* Clone this repository to your system
+* Run the .ipynb file of the particular stock that you want to predict in jupyter notebook.
+* Give your input in the dataframe as stock ticker.
+* Get output about whether a stock will go up or down.
 
 ## About the dataset:
 
-* Here in our project we import yfinanace module to get dataset of particular stock.
+Here in our project we had importorted dataset from yahoo finance website. 
 
-### yfinanace:
+## Steps:
 
-  * The yfinance is one of the famous modules in Python, which is used to collect online data, and with it, we can collect the financial data of Yahoo. With the help of the yfinance module, we retrieve and collect the company's financial information (such as financial ratios, etc.)
-  
-### How to import and use yfinanace:
 
-```
-import yfinance as yf
+### Used libraries:
 
-#downloading data from yfinanace
-data = yf.download(symbol, start=start, end=end, interval=INTERVAL)
-```
-
-## used libraries:
 * numpy
 * pandas
 * matplotlib
-* datetime
-* finta
-* sklearn
+* pandas_datareader
 
-## Process On data:
+### Loading the data in dataframe
 
-1. get data from yfinance library.
-2. use exponential smoot function to smooth our data.
-```
-def _exponential_smooth(data, alpha):
-   return data.ewm(alpha=alpha).mean()
-```
-3. put technical analysis data and remove unwanted data.
-4. create boundary on data to make analysis on that.
-5. Run on different model.
-6. got the desire output. 
+### Preprocessing the data :
+* We cleaned the data by removing the irrelevant features.
+* Splitted the dataset using in train and test form using train test split.
+* For LSTM model we transformed the dataset into 0 and 1 .
+* We splitted 70% of data into training to train the model and 30% to test
 
-## Model Used by us:
-* Random Forest Algorith.
-* K -nearest neighbor Algorithm.
-* Ensemble Algorith.
+### Data Visualization : 
+* Used matplotlib  to visualize the data.
+* plotted closing price,100 days closing average and 200 days closing average on graph.
 
-## Credits:
+### Used LSTM mode
 
-#### Dhruv Darji:
-* work on data cleaning process, random forest module and ensemple module.
-* Contributed in README and PPT.
+### Predicting the data :
+* We predictied the model on X_train and then tested it on Y_test.
 
-#### Harsh Gandhi:
-* work on data cleaning, data visulization and KNN model.
-* Contributed in README and PPT.
+
+## Credits :
+### Harsh Gandhi :
+* Worked on Stock prediction code.
+* Used LSTM .
+* Contributed in PPT and code.
+
+### Dhruv Darji :
+* Worked on Stock prediction code.
+* Used LSTM .
+* Contributed in PPT and code.
